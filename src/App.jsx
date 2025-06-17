@@ -1,18 +1,38 @@
 import { useState } from "react";
 import "./App.css";
 import HomePage from "./components/HomePage";
+import BoardPage from "./components/BoardPage";
 
 function App() {
-  const [count, setCount] = useState(0);
-  const [boardView, setBoardView] = useState(false);
+  const [currentView, setCurrentView] = useState("home");
+  const [selectedBoard, setSelectedBoard] = useState(null);
+
+  const handleViewBoard = (board) => {
+    setSelectedBoard(board);
+    setCurrentView("board");
+  };
+
+  const handleBack = () => {
+    setCurrentView("home");
+    setSelectedBoard(null);
+  };
+
+  const handleCreateBoard = () => {
+    console.log("Created new board");
+  };
 
   return (
-    <>
-      <div>
-        <HomePage boardView={boardView} setBoardView={setBoardView} />
-      </div>
-    </>
+    <div>
+      {currentView === "home" && (
+        <HomePage
+          handleViewBoard={handleViewBoard}
+          handleCreateBoard={handleCreateBoard}
+        />
+      )}
+      {currentView === "board" && selectedBoard && (
+        <BoardPage board={selectedBoard} handleBack={handleBack} />
+      )}
+    </div>
   );
 }
-
 export default App;

@@ -2,17 +2,30 @@ import BoardCover from "./BoardCover";
 import { useState } from "react";
 import data from "../data.json";
 
-export default function HomePage({ boardView, setBoardView }) {
+export default function HomePage({ handleCreateBoard, handleViewBoard }) {
   const [searchQuery, setSearchQuery] = useState("");
+  const [boards, setBoards] = useState(data);
+  const [filteredBoards, setFilteredBoards] = useState(data);
 
   const handleInputChange = (event) => {
-    setSearchQuery(event.target.value);
+    const query = event.target.value;
+    setSearchQuery(query);
+
+    if (query) {
+      const filtered = boards.filter(
+        (board) =>
+          board.board_title.toLowerCase().includes(query.toLowerCase()) ||
+          board.board_author.toLowerCase().includes(query.toLowerCase())
+      );
+      setFilteredBoards(filtered);
+    } else {
+      setFilteredBoards(boards);
+    }
   };
 
   const handleEnter = (event) => {
     if (event.key === "Enter") {
       event.preventDefault();
-      handleSearch();
     }
   };
 
@@ -20,14 +33,27 @@ export default function HomePage({ boardView, setBoardView }) {
     if (event) {
       event.preventDefault();
     }
-    onSearch(searchQuery.trim());
   };
 
-  const handleClear = (event) => {
-    if (event) {
-      event.preventDefault();
-    }
+  const handleClear = () => {
     setSearchQuery("");
+    setFilteredBoards(boards);
+  };
+
+  const handleDeleteBoard = (boardTitle) => {
+    const updatedBoards = boards.filter(
+      (board) => board.board_title !== boardTitle
+    );
+
+    setBoards(updatedBoards);
+    setFilteredBoards(
+      updatedBoards.filter(
+        (board) =>
+          !searchQuery ||
+          board.board_title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          board.board_author.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
   };
 
   return (
@@ -58,23 +84,26 @@ export default function HomePage({ boardView, setBoardView }) {
           )}
         </form>
       </div>
-      <button className="button"> Create New Board </button>
+      <button className="button" onClick={handleCreateBoard}>
+        {" "}
+        Create New Board{" "}
+      </button>
       <div className="boards">
-        {data.map((board) => {
+        {filteredBoards.map((board) => {
           return (
             <BoardCover
               key={board.board_title}
-              boardTitle={board.board_title}
-              boardCategory={board.board_author}
-              boardImage={board.board_image}
-              boardAuthor={board.board_author}
-              boardContents={board.board_content}
-              boardView={boardView}
-              setBoardView={setBoardView}
+              board={board}
+              handleViewBoard={() => handleViewBoard(board)}
+              handleDeleteBoard={handleDeleteBoard}
             />
           );
         })}
       </div>
+
+      {filteredBoards.length === 0 && searchQuery && (
+        <div>No boards found matching {searchQuery}</div>
+      )}
     </div>
   );
 }

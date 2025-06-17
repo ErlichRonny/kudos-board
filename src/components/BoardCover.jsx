@@ -3,38 +3,26 @@ import { useState } from "react";
 import BoardPage from "./BoardPage";
 
 export default function BoardCover({
-  boardTitle,
-  boardCategory,
-  // boardImage,
-  // boardAuthor,
-  // boardContents
-  boardView,
-  setBoardView,
+  board,
+  handleViewBoard,
+  handleDeleteBoard,
 }) {
-  const handleBoardClick = () => {
-    setBoardView(true);
-  };
   return (
     <div className="coverContent">
-      {!boardView && (
-        <>
-          <img src={grey} />
-          <h3> Board Title: {boardTitle} </h3>
-          <p> Category: {boardCategory} </p>
-          <div className="coverButtons">
-            <button type="button" onClick={handleBoardClick}>
-              {" "}
-              View Board{" "}
-            </button>
-            <button type="delete"> Delete Board </button>
-          </div>
-        </>
-      )}
-      {boardView && (
-        <>
-          <BoardPage />
-        </>
-      )}
+      <img src={grey} alt="Board cover" />
+      <h3> Board Title: {board.board_title} </h3>
+      <p> Category: {board.board_category} </p>
+      <div className="coverButtons">
+        <button type="button" onClick={handleViewBoard}>
+          View Board
+        </button>
+        <button
+          type="button"
+          onClick={() => handleDeleteBoard(board.board_title)}
+        >
+          Delete Board
+        </button>
+      </div>
     </div>
   );
 }
