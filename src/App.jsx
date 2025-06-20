@@ -16,19 +16,9 @@ function App() {
     setCurrentView("home");
     setSelectedBoard(null);
   };
-
-  const handleCreateBoard = () => {
-    console.log("Created new board");
-  };
-
   return (
     <div>
-      {currentView === "home" && (
-        <HomePage
-          handleViewBoard={handleViewBoard}
-          handleCreateBoard={handleCreateBoard}
-        />
-      )}
+      {currentView === "home" && <HomePage handleViewBoard={handleViewBoard} />}
       {currentView === "board" && selectedBoard && (
         <BoardPage board={selectedBoard} handleBack={handleBack} />
       )}

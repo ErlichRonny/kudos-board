@@ -1,15 +1,31 @@
 import BoardCover from "./BoardCover";
 import { useState } from "react";
 import data from "../data.json";
+import CreateBoardModal from "./CreateBoardModal";
 
-export default function HomePage({ handleCreateBoard, handleViewBoard }) {
+export default function HomePage({ handleViewBoard }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [boards, setBoards] = useState(data);
   const [filteredBoards, setFilteredBoards] = useState(data);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("all");
 
-  const handleInputChange = (event) => {
-    const query = event.target.value;
-    setSearchQuery(query);
+  const applyFilters = (query, category, boards) => {
+    let filtered = boards;
+    if (category === "all") {
+      filtered = boards;
+    } else if (category === "recent") {
+      const sortedBoards = boards.sort(
+        (a, b) => new Date(b.created_date) - new Date(a.created_date)
+      );
+      for (let i = 0; i < Math.min(6, sortedBoards.length); i++) {
+        filtered.push(sortedBoards[i]);
+      }
+    } else {
+      filtered = filtered.filter(
+        (board) => board.board_category.toLowerCase() === category.toLowerCase()
+      );
+    }
 
     if (query) {
       const filtered = boards.filter(
@@ -17,16 +33,34 @@ export default function HomePage({ handleCreateBoard, handleViewBoard }) {
           board.board_title.toLowerCase().includes(query.toLowerCase()) ||
           board.board_author.toLowerCase().includes(query.toLowerCase())
       );
-      setFilteredBoards(filtered);
-    } else {
-      setFilteredBoards(boards);
     }
+    return filtered;
+  };
+
+  const handleCreateBoard = () => {
+    setShowCreateModal(true);
+  };
+  const handleCloseModal = () => {
+    setShowCreateModal(false);
+  };
+
+  const handleInputChange = (event) => {
+    const query = event.target.value;
+    setSearchQuery(query);
+    const filtered = applyFilters(query, selectedCategory);
+    setFilteredBoards(filtered);
   };
 
   const handleEnter = (event) => {
     if (event.key === "Enter") {
       event.preventDefault();
     }
+  };
+
+  const handleCategoryChange = (category) => {
+    setSelectedCategory(category);
+    const filtered = applyFilters(searchQuery, category);
+    setFilteredBoards(filtered);
   };
 
   const handleSearch = (event) => {
@@ -84,10 +118,47 @@ export default function HomePage({ handleCreateBoard, handleViewBoard }) {
           )}
         </form>
       </div>
+      <div className="categoryFilter">
+        <h3> Filter by Category: </h3>
+        <div className="categoryButtons">
+          <button className="all" onClick={() => handleCategoryChange("all")}>
+            {" "}
+            All{" "}
+          </button>
+          <button
+            className="recent"
+            onClick={() => handleCategoryChange("recent")}
+          >
+            {" "}
+            Recent{" "}
+          </button>
+          <button
+            className="celebration"
+            onClick={() => handleCategoryChange("celebration")}
+          >
+            {" "}
+            Celebration{" "}
+          </button>
+          <button
+            className="thank you"
+            onClick={() => handleCategoryChange("thank you")}
+          >
+            {" "}
+            Thank you{" "}
+          </button>
+          <button
+            className="inspiration"
+            onClick={() => handleCategoryChange("inspiration")}
+          >
+            Inspiration
+          </button>
+        </div>
+      </div>
       <button className="button" onClick={handleCreateBoard}>
         {" "}
         Create New Board{" "}
       </button>
+      {showCreateModal && <CreateBoardModal onClose={handleCloseModal} />}
       <div className="boards">
         {filteredBoards.map((board) => {
           return (
