@@ -10,16 +10,13 @@ export default function BoardCover({
   return (
     <div className="coverContent">
       <img src={grey} alt="Board cover" />
-      <h3> Board Title: {board.board_title} </h3>
-      <p> Category: {board.board_category} </p>
+      <h3> Board Title: {board.title} </h3>
+      <p> Category: {board.category} </p>
       <div className="coverButtons">
         <button type="button" onClick={handleViewBoard}>
           View Board
         </button>
-        <button
-          type="button"
-          onClick={() => handleDeleteBoard(board.board_title)}
-        >
+        <button type="button" onClick={() => handleDeleteBoard(board.id)}>
           Delete Board
         </button>
       </div>

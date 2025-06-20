@@ -37,36 +37,6 @@ export default function HomePage({ handleViewBoard }) {
     setShowCreateModal(false);
   };
 
-  const handleAddNewBoard = (newBoardData) => {
-    fetch("http://localhost:3000/boards", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newBoardData),
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-
-        throw new Error("Failed to create board.");
-      })
-      .then((data) => {
-        setBoards((prevBoards) => [data, ...prevBoards]);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        setError("Failed to create board");
-      });
-  };
-
-  // const updatedBoards = [newBoard, ...boards];
-  // setBoards(updatedBoards);
-
-  // const filtered = applyFilters(searchQuery, selectedCategory, updatedBoards);
-  // setFilteredBoards(filtered);
-
   const handleInputChange = (event) => {
     const query = event.target.value;
     setSearchQuery(query);
@@ -91,16 +61,6 @@ export default function HomePage({ handleViewBoard }) {
   const handleClear = () => {
     setSearchQuery("");
   };
-
-  // const handleDeleteBoard = (boardTitle) => {
-  //   const updatedBoards = boards.filter(
-  //     (board) => board.board_title !== boardTitle
-  //   );
-
-  //   setBoards(updatedBoards);
-  //   const filtered = applyFilters(searchQuery, selectedCategory, updatedBoards);
-  //   setFilteredBoards(filtered);
-  // };
 
   return (
     <div className="homePage">
@@ -173,7 +133,7 @@ export default function HomePage({ handleViewBoard }) {
       {showCreateModal && (
         <CreateBoardModal
           onClose={handleCloseModal}
-          onCreateBoard={(newBoard)=> {
+          onBoardCreated={(newBoard)=> {
             setBoards(prevBoards => [newBoard, ...prevBoards])
           }}
         />

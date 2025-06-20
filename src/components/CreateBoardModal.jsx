@@ -5,17 +5,18 @@ export default function CreateBoardModal({ onClose, onBoardCreated }) {
   const [category, setCategory] = useState("");
   const [author, setAuthor] = useState("");
   const [errors, setErrors] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setErrors();
-    const newErrors = {};
+    setErrors("");
     if (!title) {
       setErrors("Title is required");
+      return;
     }
     if (!category) {
       setErrors("Category is required");
+      return;
     }
 
     const newBoard = {
@@ -59,7 +60,7 @@ export default function CreateBoardModal({ onClose, onBoardCreated }) {
           <button onClick={onClose} id="closeModalBtn">
             𝘅
           </button>
-          <div> Error: {errors} </div>;
+          <div> Error: {errors} </div>
         </div>
       </div>
     );
@@ -70,7 +71,7 @@ export default function CreateBoardModal({ onClose, onBoardCreated }) {
       <div className="modal-backdrop">
         <div className="createModal">
           <div className="modalContent"></div>
-          <div> Creating board...</div>;
+          <div> Creating board...</div>
         </div>
       </div>
     );
