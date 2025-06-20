@@ -15,7 +15,7 @@ export default function CreateCardModal({ onClose, onCreateCard, boardId }) {
       return;
     }
     fetch(
-      `https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&q=${searchTerm}&limit=10`
+      `https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&q=${searchTerm}&limit=6`
     )
       .then((response) => {
         if (!response.ok) {
@@ -104,7 +104,8 @@ export default function CreateCardModal({ onClose, onCreateCard, boardId }) {
                   <div className="gifsGrid">
                     {gifs.map((gif) => (
                       <img
-                        src={gif.images.fixed_height_small.url}
+                        key={gif.id}
+                        src={gif.images.fixed_height.url}
                         onClick={() => selectGif(gif)}
                       />
                     ))}
