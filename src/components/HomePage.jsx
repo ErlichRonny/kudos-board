@@ -10,25 +10,27 @@ export default function HomePage({ handleViewBoard }) {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("all");
 
-  const applyFilters = (query, category, boards) => {
-    let filtered = boards;
+  const applyFilters = (query, category, boardsList) => {
+    let filtered = boardsList;
+
     if (category === "all") {
-      filtered = boards;
+      filtered = boardsList;
     } else if (category === "recent") {
-      const sortedBoards = boards.sort(
+      const sortedBoards = [...boardsList].sort(
         (a, b) => new Date(b.created_date) - new Date(a.created_date)
       );
+      filtered = [];
       for (let i = 0; i < Math.min(6, sortedBoards.length); i++) {
         filtered.push(sortedBoards[i]);
       }
     } else {
-      filtered = filtered.filter(
+      filtered = boardsList.filter(
         (board) => board.board_category.toLowerCase() === category.toLowerCase()
       );
     }
 
     if (query) {
-      const filtered = boards.filter(
+      const filtered = filtered.filter(
         (board) =>
           board.board_title.toLowerCase().includes(query.toLowerCase()) ||
           board.board_author.toLowerCase().includes(query.toLowerCase())
@@ -47,7 +49,7 @@ export default function HomePage({ handleViewBoard }) {
   const handleInputChange = (event) => {
     const query = event.target.value;
     setSearchQuery(query);
-    const filtered = applyFilters(query, selectedCategory);
+    const filtered = applyFilters(query, selectedCategory, boards);
     setFilteredBoards(filtered);
   };
 
@@ -59,7 +61,7 @@ export default function HomePage({ handleViewBoard }) {
 
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);
-    const filtered = applyFilters(searchQuery, category);
+    const filtered = applyFilters(searchQuery, category, boards);
     setFilteredBoards(filtered);
   };
 
@@ -71,6 +73,7 @@ export default function HomePage({ handleViewBoard }) {
 
   const handleClear = () => {
     setSearchQuery("");
+    const filtered = applyFilters("", selectedCategory, boards);
     setFilteredBoards(boards);
   };
 
@@ -80,14 +83,8 @@ export default function HomePage({ handleViewBoard }) {
     );
 
     setBoards(updatedBoards);
-    setFilteredBoards(
-      updatedBoards.filter(
-        (board) =>
-          !searchQuery ||
-          board.board_title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          board.board_author.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    );
+    const filtered = applyFilters(searchQuery, selectedCategory, updatedBoards);
+    setFilteredBoards(filtered);
   };
 
   return (
