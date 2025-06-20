@@ -28,7 +28,7 @@ export default function BoardList({
     } else {
       filtered = boardsList.filter(
         (board) =>
-          board.board_category.toLowerCase() ===
+          board.category.toLowerCase() ===
           filterOptions.category.toLowerCase()
       );
     }
@@ -39,7 +39,7 @@ export default function BoardList({
           board.title
             .toLowerCase()
             .includes(filterOptions.searchQuery.toLowerCase()) ||
-          board.title
+          board.author
             .toLowerCase()
             .includes(filterOptions.searchQuery.toLowerCase())
       );

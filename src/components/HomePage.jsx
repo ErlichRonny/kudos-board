@@ -5,7 +5,7 @@ import BoardList from "./BoardList";
 
 export default function HomePage({ handleViewBoard }) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [boards, setBoards] = useState(data);
+  const [boards, setBoards] = useState([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [error, setError] = useState("");
@@ -173,7 +173,9 @@ export default function HomePage({ handleViewBoard }) {
       {showCreateModal && (
         <CreateBoardModal
           onClose={handleCloseModal}
-          onCreateBoard={handleAddNewBoard}
+          onCreateBoard={(newBoard)=> {
+            setBoards(prevBoards => [newBoard, ...prevBoards])
+          }}
         />
       )}
       <BoardList

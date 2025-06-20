@@ -1,32 +1,80 @@
 import { useState } from "react";
 
-export default function CreateBoardModal({ onClose, onCreateBoard }) {
+export default function CreateBoardModal({ onClose, onBoardCreated }) {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [author, setAuthor] = useState("");
   const [errors, setErrors] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    setErrors();
+    const newErrors = {};
     if (!title) {
-      alert("Title is required");
+      setErrors("Title is required");
     }
     if (!category) {
-      alert("Category is required");
+      setErrors("Category is required");
     }
 
     const newBoard = {
-      board_title: title,
-      board_category: category,
-      board_author: author || "",
-      created_date: new Date().toISOString,
-      board_image: "",
-      board_content: [],
+      title: title,
+      category: category,
+      author: author || "",
     };
 
-    onCreateBoard(newBoard);
-    onClose();
+    setIsLoading(true);
+
+    fetch("http://localhost:3000/boards", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newBoard),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+
+        throw new Error("Failed to create board.");
+      })
+      .then((data) => {
+        onBoardCreated(data);
+        onClose();
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        setErrors("Failed to create board");
+        setIsLoading(false);
+      });
   };
+
+  if (errors) {
+    return (
+      <div className="modal-backdrop">
+        <div className="createModal">
+          <div className="modalContent"></div>
+          <button onClick={onClose} id="closeModalBtn">
+            𝘅
+          </button>
+          <div> Error: {errors} </div>;
+        </div>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="modal-backdrop">
+        <div className="createModal">
+          <div className="modalContent"></div>
+          <div> Creating board...</div>;
+        </div>
+      </div>
+    );
+  }
   return (
     <>
       <div className="modal-backdrop">
