@@ -1,4 +1,8 @@
-const express = require("express");
+import express from "express";
+import cors from 'cors'
+import boardRoutes from "./routes/boardRoutes.js";
+import cardRoutes from "./routes/cardRoutes.js";
+
 const app = express();
 const PORT = 3000;
 
@@ -6,9 +10,12 @@ app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
 
-const boardRoutes = require('./routes/boardRoutes')
-const cardRoutes = require('./routes/cardRoutes')
+app.get("/", (req, res) => {
+  res.send("Hello world");
+});
 
-app.use('/boards', boardRoutes)
+app.use(express.json())
+app.use(cors());
 
-app.use('/cards',cardRoutes)
+app.use("/boards", boardRoutes);
+app.use("/cards", cardRoutes);
