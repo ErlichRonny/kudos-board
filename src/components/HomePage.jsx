@@ -1,45 +1,35 @@
-import BoardCover from "./BoardCover";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import data from "../data.json";
 import CreateBoardModal from "./CreateBoardModal";
+import BoardList from "./BoardList";
 
 export default function HomePage({ handleViewBoard }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [boards, setBoards] = useState(data);
-  const [filteredBoards, setFilteredBoards] = useState(data);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [error, setError] = useState("");
 
-  const applyFilters = (query, category, boardsList) => {
-    let filtered = boardsList;
+  useEffect(() => {
+    fetch("http://localhost:3000/boards")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Response failed");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setBoards(data);
+      })
+      .catch((error) => {
+        console.error("There was a problem with your fetch operation:", error);
+        setError("Failed to fetch boards. Please try again later.");
+      });
+  }, []);
 
-    if (category === "all") {
-      filtered = boardsList;
-    } else if (category === "recent") {
-      const sortedBoards = [...boardsList].sort(
-        (a, b) => new Date(b.created_date) - new Date(a.created_date)
-      );
-      filtered = [];
-      for (let i = 0; i < Math.min(6, sortedBoards.length); i++) {
-        filtered.push(sortedBoards[i]);
-      }
-    } else {
-      filtered = boardsList.filter(
-        (board) => board.board_category.toLowerCase() === category.toLowerCase()
-      );
-    }
+  const filters = { searchQuery, category: selectedCategory };
 
-    if (query) {
-      filtered = filtered.filter(
-        (board) =>
-          board.board_title.toLowerCase().includes(query.toLowerCase()) ||
-          board.board_author.toLowerCase().includes(query.toLowerCase())
-      );
-    }
-    return filtered;
-  };
-
-  const handleCreateBoard = (newBoard) => {
+  const handleCreateBoard = () => {
     setShowCreateModal(true);
   };
 
@@ -47,19 +37,39 @@ export default function HomePage({ handleViewBoard }) {
     setShowCreateModal(false);
   };
 
-  const handleAddNewBoard = (newBoard) => {
-    const updatedBoards = [newBoard, ...boards];
-    setBoards(updatedBoards);
+  const handleAddNewBoard = (newBoardData) => {
+    fetch("http://localhost:3000/boards", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newBoardData),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
 
-    const filtered = applyFilters(searchQuery, selectedCategory, updatedBoards);
-    setFilteredBoards(filtered);
+        throw new Error("Failed to create board.");
+      })
+      .then((data) => {
+        setBoards((prevBoards) => [data, ...prevBoards]);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        setError("Failed to create board");
+      });
   };
+
+  // const updatedBoards = [newBoard, ...boards];
+  // setBoards(updatedBoards);
+
+  // const filtered = applyFilters(searchQuery, selectedCategory, updatedBoards);
+  // setFilteredBoards(filtered);
 
   const handleInputChange = (event) => {
     const query = event.target.value;
     setSearchQuery(query);
-    const filtered = applyFilters(query, selectedCategory, boards);
-    setFilteredBoards(filtered);
   };
 
   const handleEnter = (event) => {
@@ -70,8 +80,6 @@ export default function HomePage({ handleViewBoard }) {
 
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);
-    const filtered = applyFilters(searchQuery, category, boards);
-    setFilteredBoards(filtered);
   };
 
   const handleSearch = (event) => {
@@ -82,18 +90,17 @@ export default function HomePage({ handleViewBoard }) {
 
   const handleClear = () => {
     setSearchQuery("");
-    const filtered = applyFilters("", selectedCategory, boards);
   };
 
-  const handleDeleteBoard = (boardTitle) => {
-    const updatedBoards = boards.filter(
-      (board) => board.board_title !== boardTitle
-    );
+  // const handleDeleteBoard = (boardTitle) => {
+  //   const updatedBoards = boards.filter(
+  //     (board) => board.board_title !== boardTitle
+  //   );
 
-    setBoards(updatedBoards);
-    const filtered = applyFilters(searchQuery, selectedCategory, updatedBoards);
-    setFilteredBoards(filtered);
-  };
+  //   setBoards(updatedBoards);
+  //   const filtered = applyFilters(searchQuery, selectedCategory, updatedBoards);
+  //   setFilteredBoards(filtered);
+  // };
 
   return (
     <div className="homePage">
@@ -169,22 +176,12 @@ export default function HomePage({ handleViewBoard }) {
           onCreateBoard={handleAddNewBoard}
         />
       )}
-      <div className="boards">
-        {filteredBoards.map((board) => {
-          return (
-            <BoardCover
-              key={board.board_title}
-              board={board}
-              handleViewBoard={() => handleViewBoard(board)}
-              handleDeleteBoard={handleDeleteBoard}
-            />
-          );
-        })}
-      </div>
-
-      {filteredBoards.length === 0 && searchQuery && (
-        <div>No boards found matching {searchQuery}</div>
-      )}
+      <BoardList
+        boards={boards}
+        setBoards={setBoards}
+        filters={filters}
+        handleViewBoard={handleViewBoard}
+      />
     </div>
   );
 }
