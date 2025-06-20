@@ -99,10 +99,11 @@ boardRoutes.get("/:id/cards", async (req, res) => {
 boardRoutes.post("/:id/cards", async (req, res) => {
   try {
     const { id } = req.params;
-    const { message, gifURL, author } = req.body;
+    const { title, message, gifURL, author } = req.body;
 
     const newCard = await prisma.card.create({
       data: {
+        title,
         message,
         gifURL,
         author,

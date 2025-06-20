@@ -5,6 +5,7 @@ export default function CreateCardModal({ onClose, onCreateCard, boardId }) {
   const [gifURL, setGifURL] = useState("");
   const [author, setAuthor] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [title, setTitle] = useState("");
   const [gifs, setGifs] = useState([]);
   const [errors, setErrors] = useState("");
 
@@ -50,6 +51,7 @@ export default function CreateCardModal({ onClose, onCreateCard, boardId }) {
     }
 
     const newCardData = {
+      title: title,
       message: message,
       gifURL,
       author: author || "",
@@ -70,6 +72,15 @@ export default function CreateCardModal({ onClose, onCreateCard, boardId }) {
             </button>
             <h2 id="modalTitle"> Create New Card </h2>
             <form onSubmit={handleSubmit}>
+              <div className="formContent">
+                <label> Title * </label>
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Enter card title"
+                />
+              </div>
               <div className="formContent">
                 <label> Message * </label>
                 <input

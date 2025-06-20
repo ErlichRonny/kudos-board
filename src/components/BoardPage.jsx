@@ -29,15 +29,11 @@ export default function BoardPage({ board, handleBack }) {
   }, []);
 
   const handleUpvote = (cardId) => {
-    console.log("Attempting to upvote: ", cardId);
     fetch(`http://localhost:3000/cards/${cardId}/upvote`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
     })
       .then((response) => {
-        console.log("Response status: ", response.status);
-        console.log("Response ok: ", response.ok);
-
         if (!response.ok) {
           throw new Error("Failed to upvote the card.");
         }
@@ -122,9 +118,10 @@ export default function BoardPage({ board, handleBack }) {
       {cards.map((card) => (
         <BoardCard
           key={card.id}
-          title={`Card ${card.id}`}
+          title={card.title}
           text={card.message}
           image={card.gifURL}
+          author={card.author}
           upvotes={card.upvotes || 0}
           handleUpvote={() => handleUpvote(card.id)}
           handleDelete={() => handleDelete(card.id)}

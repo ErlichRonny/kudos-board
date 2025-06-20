@@ -37,7 +37,7 @@ cardRoutes.get("/:id", async (req, res) => {
 // Create new card
 cardRoutes.post("/", async (req, res) => {
   try {
-    const { message, gifURL, author, boardId } = req.body;
+    const { title, message, gifURL, author, boardId } = req.body;
     if (!boardId) {
       return res.status(400).json("Board id is required");
     }
@@ -51,6 +51,7 @@ cardRoutes.post("/", async (req, res) => {
     }
     const newCard = await prisma.card.create({
       data: {
+        title,
         message,
         gifURL,
         author,
