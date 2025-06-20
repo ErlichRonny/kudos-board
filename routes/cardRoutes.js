@@ -1,3 +1,4 @@
+console.log("CARD ROUTES FILE LOADED");
 import express from "express";
 import { PrismaClient } from "../src/generated/prisma/index.js";
 const cardRoutes = express.Router();
@@ -78,6 +79,22 @@ cardRoutes.put("/:id", async (req, res) => {
     res.json(updatedCard);
   } catch (error) {
     res.status(500).send("An error occured while updating the card");
+  }
+});
+
+// Upvote a card
+cardRoutes.patch("/:id/upvote", async (req, res) => {
+  try {
+    const cardId = req.params.id;
+    const updatedCard = await prisma.card.update({
+      where: { id: parseInt(cardId) },
+      data: {
+        upvotes: { increment: 1 },
+      },
+    });
+    res.json(updatedCard);
+  } catch (error) {
+    res.status(500).send("An error occured while upvoting the card");
   }
 });
 

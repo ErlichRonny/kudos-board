@@ -2,6 +2,7 @@ export default function BoardCard({
   title,
   text,
   image,
+  upvotes = 0,
   handleUpvote,
   handleDelete,
 }) {
@@ -13,8 +14,7 @@ export default function BoardCard({
 
       <div className="cardButtons">
         <button type="button" onClick={handleUpvote}>
-          {" "}
-          Upvote{" "}
+          Upvote: {upvotes}
         </button>
         <button type="button" onClick={handleDelete}>
           {" "}

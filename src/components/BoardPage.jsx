@@ -29,8 +29,33 @@ export default function BoardPage({ board, handleBack }) {
   }, []);
 
   const handleUpvote = (cardId) => {
-    console.log(`Upvoted card ${cardId}`);
-    // TODO: add upvote api call
+    console.log("Attempting to upvote: ", cardId);
+    fetch(`http://localhost:3000/cards/${cardId}/upvote`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((response) => {
+        console.log("Response status: ", response.status);
+        console.log("Response ok: ", response.ok);
+
+        if (!response.ok) {
+          throw new Error("Failed to upvote the card.");
+        }
+        return response.json();
+      })
+      .then((updatedCard) => {
+        setCards(
+          cards.map((card) =>
+            card.id === cardId
+              ? { ...card, upvotes: updatedCard.upvotes }
+              : card
+          )
+        );
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        setError("Failed to upvote card. Please try again later.");
+      });
   };
 
   const handleDelete = (cardId) => {
@@ -100,6 +125,7 @@ export default function BoardPage({ board, handleBack }) {
           title={`Card ${card.id}`}
           text={card.message}
           image={card.gifURL}
+          upvotes={card.upvotes || 0}
           handleUpvote={() => handleUpvote(card.id)}
           handleDelete={() => handleDelete(card.id)}
         />
