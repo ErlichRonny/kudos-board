@@ -4,16 +4,18 @@
     "board_category": "Celebration",
     "board_image": "../assets/grey.jpeg",
     "board_author": "optional",
+    "created_date": "2025-06-19",
     "board_content": [
       ["board message", "gif", "number of upvotes", "author"],
       ["board message", "gif", "number of upvotes", "author"]
     ]
   },
-    {
+  {
     "board_title": "hi",
-    "board_category": "Celebration",
+    "board_category": "Thank you",
     "board_image": "../assets/grey.jpeg",
     "board_author": "optional",
+    "created_date": "2025-06-18",
     "board_content": [
       ["board message", "gif", "number of upvotes", "author"],
       ["board message", "gif", "number of upvotes", "author"]

@@ -1,7 +1,6 @@
-import { createPortal } from "react-dom";
 import { useState } from "react";
 
-export default function CreateBoardModal({ onClose }) {
+export default function CreateBoardModal({ onClose, onCreateBoard }) {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [author, setAuthor] = useState("");
@@ -17,13 +16,13 @@ export default function CreateBoardModal({ onClose }) {
     }
 
     const newBoard = {
-        board_title: title,
-        board_category: category,
-        board_author: author || "",
-        created_date: new Date(),
-        board_image: "",
-        board_content: []
-    }
+      board_title: title,
+      board_category: category,
+      board_author: author || "",
+      created_date: new Date().toISOString,
+      board_image: "",
+      board_content: [],
+    };
 
     onCreateBoard(newBoard);
     onClose();
@@ -37,10 +36,43 @@ export default function CreateBoardModal({ onClose }) {
               𝘅
             </button>
             <h2 id="modalTitle"> Create New Board </h2>
-            <p> Title: </p>
-            <p> Category: </p>
-            <p> Author: </p>
-            {createPortal(<p> portal content </p>, document.body)}
+            <form onSubmit={handleSubmit}>
+              <div className="formContent">
+                <label> Title * </label>
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Enter board title"
+                />
+              </div>
+              <div className="formContent">
+                <label> Category *</label>
+                <select
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                >
+                  <option value=""> Select a category </option>
+                  <option value="celebration"> Celebration </option>
+                  <option value="thank you"> Thank you </option>
+                  <option value="inspiration"> Inspiration </option>
+                </select>
+              </div>
+              <div className="formContent">
+                <label> Author </label>
+                <input
+                  type="text"
+                  value={author}
+                  onChange={(e) => setAuthor(e.target.value)}
+                  placeholder="Enter author name"
+                />
+              </div>
+              <div className="modalButton">
+                <button type="submit" className="createBtn">
+                  Create Board
+                </button>
+              </div>
+            </form>
           </div>
         </div>{" "}
       </div>

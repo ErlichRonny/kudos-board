@@ -30,7 +30,7 @@ export default function HomePage({ handleViewBoard }) {
     }
 
     if (query) {
-      const filtered = filtered.filter(
+      filtered = filtered.filter(
         (board) =>
           board.board_title.toLowerCase().includes(query.toLowerCase()) ||
           board.board_author.toLowerCase().includes(query.toLowerCase())
@@ -39,11 +39,20 @@ export default function HomePage({ handleViewBoard }) {
     return filtered;
   };
 
-  const handleCreateBoard = () => {
+  const handleCreateBoard = (newBoard) => {
     setShowCreateModal(true);
   };
+
   const handleCloseModal = () => {
     setShowCreateModal(false);
+  };
+
+  const handleAddNewBoard = (newBoard) => {
+    const updatedBoards = [newBoard, ...boards];
+    setBoards(updatedBoards);
+
+    const filtered = applyFilters(searchQuery, selectedCategory, updatedBoards);
+    setFilteredBoards(filtered);
   };
 
   const handleInputChange = (event) => {
@@ -74,7 +83,6 @@ export default function HomePage({ handleViewBoard }) {
   const handleClear = () => {
     setSearchQuery("");
     const filtered = applyFilters("", selectedCategory, boards);
-    setFilteredBoards(boards);
   };
 
   const handleDeleteBoard = (boardTitle) => {
@@ -155,7 +163,12 @@ export default function HomePage({ handleViewBoard }) {
         {" "}
         Create New Board{" "}
       </button>
-      {showCreateModal && <CreateBoardModal onClose={handleCloseModal} />}
+      {showCreateModal && (
+        <CreateBoardModal
+          onClose={handleCloseModal}
+          onCreateBoard={handleAddNewBoard}
+        />
+      )}
       <div className="boards">
         {filteredBoards.map((board) => {
           return (

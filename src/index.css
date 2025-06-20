@@ -67,8 +67,43 @@ button:focus-visible {
   }
 }
 
-.boards{
+.boards {
   display: flex;
   flex-direction: row;
   margin-top: 5px;
+}
+
+.createModal {
+  position: fixed;
+  top: 50vh;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgb(255, 255, 255);
+  color: black;
+  padding: 40px;
+  border-radius: 12px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modalContent {
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.486);
+  z-index: 999;
+}
+
+#closeModalBtn {
+  background-color: rgb(205, 202, 202);
+  padding: 10px 40px;
+  font-size: 20px;
 }
