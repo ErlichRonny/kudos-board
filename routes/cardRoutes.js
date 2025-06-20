@@ -17,7 +17,7 @@ cardRoutes.get("/", async (req, res) => {
 // Get specific card
 cardRoutes.get("/:id", async (req, res) => {
   try {
-    const parsedId = parseInt(req.params);
+    const parsedId = parseInt(req.params.id);
     const card = await prisma.card.findUnique({
       where: { id: parsedId },
       include: { board: true },

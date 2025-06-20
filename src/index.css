@@ -107,3 +107,10 @@ button:focus-visible {
   padding: 10px 40px;
   font-size: 20px;
 }
+
+.gifsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  max-height: 300px;
+}

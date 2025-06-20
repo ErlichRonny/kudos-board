@@ -17,7 +17,7 @@ boardRoutes.get("/", async (req, res) => {
 // Get specific board
 boardRoutes.get("/:id", async (req, res) => {
   try {
-    const parsedId = parseInt(req.params);
+    const parsedId = parseInt(req.params.id);
     const board = await prisma.board.findUnique({
       where: { id: parsedId },
       include: { cards: true },
@@ -86,7 +86,7 @@ boardRoutes.delete("/:id", async (req, res) => {
 boardRoutes.get("/:id/cards", async (req, res) => {
   try {
     const parsedId = parseInt(req.params);
-    const cards = await prisma.board.findMany({
+    const cards = await prisma.card.findMany({
       where: { boardId: parsedId },
     });
     res.json(cards);

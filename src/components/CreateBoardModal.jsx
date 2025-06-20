@@ -108,7 +108,7 @@ export default function CreateBoardModal({ onClose, onBoardCreated }) {
                 </select>
               </div>
               <div className="formContent">
-                <label> Author </label>
+                <label> Author (optional) </label>
                 <input
                   type="text"
                   value={author}

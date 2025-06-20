@@ -1,29 +1,65 @@
-export default function ({ onClose, onCreateBoard }) {
-  const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("");
+import { useState } from "react";
+
+export default function CreateCardModal({ onClose, onCreateCard, boardId }) {
+  const [message, setMessage] = useState("");
+  const [gifURL, setGifURL] = useState("");
   const [author, setAuthor] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [gifs, setGifs] = useState([]);
+  const [errors, setErrors] = useState("");
+
+  const GIPHY_API_KEY = import.meta.env.VITE_GIPHY_API_KEY;
+
+  const searchGifs = () => {
+    if (!searchTerm) {
+      return;
+    }
+    fetch(
+      `https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&q=${searchTerm}&limit=10`
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to search GIFs");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setGifs(data.data || []);
+      })
+      .catch((error) => {
+        console.error("Error", error);
+        setErrors("Error with searching GIFs");
+      });
+  };
+
+  const selectGif = (gif) => {
+    setGifURL(gif.images.original.url);
+    setGifs([]);
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (!title) {
-      alert("Title is required");
+    setErrors("");
+    if (!message) {
+      setErrors("Message is required");
+      return;
     }
-    if (!category) {
-      alert("Category is required");
+    if (!gifURL) {
+      setErrors("Gif is required");
+      return;
     }
 
-    const newBoard = {
-      board_title: title,
-      board_category: category,
-      board_author: author || "",
-      created_date: new Date().toISOString,
-      board_image: "",
-      board_content: [],
+    const newCardData = {
+      message: message,
+      gifURL,
+      author: author || "",
+      boardId: parseInt(boardId),
     };
 
-    onCreateBoard(newBoard);
+    onCreateCard(newCardData);
     onClose();
   };
+
   return (
     <>
       <div className="modal-backdrop">
@@ -32,31 +68,52 @@ export default function ({ onClose, onCreateBoard }) {
             <button onClick={onClose} id="closeModalBtn">
               𝘅
             </button>
-            <h2 id="modalTitle"> Create New Board </h2>
+            <h2 id="modalTitle"> Create New Card </h2>
             <form onSubmit={handleSubmit}>
               <div className="formContent">
-                <label> Title * </label>
+                <label> Message * </label>
                 <input
                   type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="Enter board title"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder="Enter card message"
                 />
               </div>
               <div className="formContent">
-                <label> Category *</label>
-                <select
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                >
-                  <option value=""> Select a category </option>
-                  <option value="celebration"> Celebration </option>
-                  <option value="thank you"> Thank you </option>
-                  <option value="inspiration"> Inspiration </option>
-                </select>
+                <label> Seach for GIF *</label>
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Search GIFs"
+                />
+                <button type="button" onClick={searchGifs}>
+                  {" "}
+                  Search{" "}
+                </button>
               </div>
+
+              {gifURL && (
+                <div className="formContent">
+                  <img src={gifURL} />
+                </div>
+              )}
+
+              {gifs.length > 0 && (
+                <div className="formContent">
+                  <div className="gifsGrid">
+                    {gifs.map((gif) => (
+                      <img
+                        src={gif.images.fixed_height_small.url}
+                        onClick={() => selectGif(gif)}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div className="formContent">
-                <label> Author </label>
+                <label> Author (optional) </label>
                 <input
                   type="text"
                   value={author}
@@ -66,7 +123,7 @@ export default function ({ onClose, onCreateBoard }) {
               </div>
               <div className="modalButton">
                 <button type="submit" className="createBtn">
-                  Create Board
+                  Create Card
                 </button>
               </div>
             </form>

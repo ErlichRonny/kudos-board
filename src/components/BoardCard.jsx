@@ -1,14 +1,25 @@
-import grey from "../assets/grey.jpeg";
-
-export default function BoardCard({title, text, handleUpvote, handleDelete}) {
+export default function BoardCard({
+  title,
+  text,
+  image,
+  handleUpvote,
+  handleDelete,
+}) {
   return (
     <div className="cardContent">
       <h3> Card Title: {title} </h3>
       <p> Card text: {text} </p>
-      <img src={grey} />
+      {image && <img src={image} />}
+
       <div className="cardButtons">
-        <button type="button" onClick={handleUpvote}> Upvote </button>
-        <button type="delete"  onClick={handleDelete}> Delete </button>
+        <button type="button" onClick={handleUpvote}>
+          {" "}
+          Upvote{" "}
+        </button>
+        <button type="button" onClick={handleDelete}>
+          {" "}
+          Delete{" "}
+        </button>
       </div>
     </div>
   );

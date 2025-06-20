@@ -1,10 +1,12 @@
 import BoardCard from "./BoardCard";
+import CreateCardModal from "./CreateCardModal";
 import { useState, useEffect } from "react";
 
 export default function BoardPage({ board, handleBack }) {
   const [cards, setCards] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   // Fetch cards for this board
   useEffect(() => {
@@ -48,14 +50,7 @@ export default function BoardPage({ board, handleBack }) {
       });
   };
 
-  const handleAddCard = () => {
-    const newCardData = {
-      message: "New message",
-      gifURL: "",
-      author: "Author",
-      boardId: board.id,
-    };
-
+  const handleCreateCard = (newCardData) => {
     fetch(`http://localhost:3000/boards/${board.id}/cards`, {
       method: "POST",
       headers: {
@@ -95,16 +90,28 @@ export default function BoardPage({ board, handleBack }) {
       </button>
       <h3> Board Title: {board.title} </h3>
       <p> Author: {board.author} </p>
-      <button type="button"> Create a Card </button>
+      <button type="button" onClick={() => setShowCreateModal(true)}>
+        {" "}
+        Create a Card{" "}
+      </button>
       {cards.map((card) => (
         <BoardCard
           key={card.id}
           title={`Card ${card.id}`}
           text={card.message}
-          onUpvote={() => handleUpvote(card.id)}
-          onDelete={() => handleDelete(card.id)}
+          image={card.gifURL}
+          handleUpvote={() => handleUpvote(card.id)}
+          handleDelete={() => handleDelete(card.id)}
         />
       ))}
+
+      {showCreateModal && (
+        <CreateCardModal
+          onClose={() => setShowCreateModal(false)}
+          onCreateCard={handleCreateCard}
+          boardId={board.id}
+        />
+      )}
     </div>
   );
 }
