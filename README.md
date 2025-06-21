@@ -2,7 +2,8 @@
 
 Submitted by: Ronny Erlich
 
-Deployed Application (**required**): [Kudos Board Deployed Site](https://kudos-board-j7dk.onrender.com/)
+Deployed Application (**required**): [Kudos Board Deployed Site]
+(https://kudos-board-j7dk.onrender.com/)
 
 ### Application Features
 
