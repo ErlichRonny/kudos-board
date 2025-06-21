@@ -1,6 +1,7 @@
 import BoardCard from "./BoardCard";
 import CreateCardModal from "./CreateCardModal";
 import { useState, useEffect } from "react";
+import { API_BASE_URL } from "../utils/api";
 
 export default function BoardPage({ board, handleBack }) {
   const [cards, setCards] = useState([]);
@@ -10,7 +11,7 @@ export default function BoardPage({ board, handleBack }) {
 
   // Fetch cards for this board
   useEffect(() => {
-    fetch(`http://localhost:3000/boards/${board.id}`)
+    fetch(`${API_BASE_URL}/boards/${board.id}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Response failed");
@@ -29,7 +30,7 @@ export default function BoardPage({ board, handleBack }) {
   }, []);
 
   const handleUpvote = (cardId) => {
-    fetch(`http://localhost:3000/cards/${cardId}/upvote`, {
+    fetch(`${API_BASE_URL}/cards/${cardId}/upvote`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
     })
@@ -55,7 +56,7 @@ export default function BoardPage({ board, handleBack }) {
   };
 
   const handleDelete = (cardId) => {
-    fetch(`http://localhost:3000/cards/${cardId}`, {
+    fetch(`${API_BASE_URL}/cards/${cardId}`, {
       method: "DELETE",
     })
       .then((response) => {
@@ -72,7 +73,7 @@ export default function BoardPage({ board, handleBack }) {
   };
 
   const handleCreateCard = (newCardData) => {
-    fetch(`http://localhost:3000/boards/${board.id}/cards`, {
+    fetch(`${API_BASE_URL}/boards/${board.id}/cards`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

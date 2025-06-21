@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import BoardCover from "./BoardCover";
+import { API_BASE_URL } from "../utils/api";
 
 export default function BoardList({
   boards,
@@ -28,8 +29,7 @@ export default function BoardList({
     } else {
       filtered = boardsList.filter(
         (board) =>
-          board.category.toLowerCase() ===
-          filterOptions.category.toLowerCase()
+          board.category.toLowerCase() === filterOptions.category.toLowerCase()
       );
     }
 
@@ -48,7 +48,7 @@ export default function BoardList({
   };
 
   const handleDelete = (id) => {
-    fetch(`http://localhost:3000/boards/${id}`, {
+    fetch(`${API_BASE_URL}/boards/${id}`, {
       method: "DELETE",
     })
       .then((response) => {

@@ -1,6 +1,4 @@
 import grey from "../assets/grey.jpeg";
-import { useState } from "react";
-import BoardPage from "./BoardPage";
 
 export default function BoardCover({
   board,

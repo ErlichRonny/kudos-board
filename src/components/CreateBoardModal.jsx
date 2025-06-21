@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { API_BASE_URL } from "../utils/api";
 
 export default function CreateBoardModal({ onClose, onBoardCreated }) {
   const [title, setTitle] = useState("");
@@ -27,7 +28,7 @@ export default function CreateBoardModal({ onClose, onBoardCreated }) {
 
     setIsLoading(true);
 
-    fetch("http://localhost:3000/boards", {
+    fetch(`${API_BASE_URL}/boards`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

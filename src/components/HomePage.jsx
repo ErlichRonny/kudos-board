@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import data from "../data.json";
 import CreateBoardModal from "./CreateBoardModal";
 import BoardList from "./BoardList";
+import { API_BASE_URL } from "../utils/api";
+
 
 export default function HomePage({ handleViewBoard }) {
   const [searchQuery, setSearchQuery] = useState("");
@@ -11,7 +12,7 @@ export default function HomePage({ handleViewBoard }) {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:3000/boards")
+    fetch(`${API_BASE_URL}/boards`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Response failed");
